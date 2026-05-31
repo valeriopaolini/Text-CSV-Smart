@@ -6,14 +6,13 @@
 use strict;
 use warnings;
 
-#use Test::More qw(no_plan);
-use Test::More tests => 27;
+use Test::More tests => 29;
 use Test::Exception;
-use Test::Files;
 
 BEGIN {
   unlink('t/csv/append.csv');
   unlink('t/csv/new.csv');
+  unlink('t/csv/parser-error.csv');
   unlink('t/csv/writer.csv');
 
   use_ok('Text::CSV::Smart::Writer')
@@ -22,6 +21,7 @@ BEGIN {
 END {
   unlink('t/csv/append.csv');
   unlink('t/csv/new.csv');
+  unlink('t/csv/parser-error.csv');
   unlink('t/csv/writer.csv');
 };
 
@@ -63,6 +63,8 @@ is_deeply($r2->_fields, \@FIELDS, 'Row->_fields');
 
 throws_ok { $w2->write( $w2 ) } qr/unknown row type/, 'Writer->write (not a Row)';
 
+throws_ok { $w2->write({ first => 1 }) } qr/unknown row type/, 'Writer->write (unblessed ref)';
+
 ok($w2->write($r2), 'Writer->write(Row)');
 
 ok($w2->write([qw/ a b c /]), 'Writer->write(ARRAY)');
@@ -75,7 +77,7 @@ ok($w2->write($r2), 'Writer->write(Row)');
 
 ok($w2->close, 'Writer->close');
 
-compare_ok('t/csv/writer.csv', 't/csv/writer-t1.csv', 'check file');
+is(slurp('t/csv/writer.csv'), slurp('t/csv/writer-t1.csv'), 'check file');
 
 isa_ok(my $w3 = Text::CSV::Smart::Writer->new('appender', 't/csv/writer.csv', { fields => \@FIELDS }), 'Text::CSV::Smart::Writer', 'Writer->new (appender)');
 
@@ -83,5 +85,24 @@ ok($w3->write([qw/ 7 8 9 /]), 'Writer->write(ARRAY)');
 
 ok($w3->close, 'Writer->close');
 
-compare_ok('t/csv/writer.csv', 't/csv/writer-t2.csv', 'check file (appended)');
+is(slurp('t/csv/writer.csv'), slurp('t/csv/writer-t2.csv'), 'check file (appended)');
 
+my $w4 = Text::CSV::Smart::Writer->new('writer', 't/csv/parser-error.csv', { fields => \@FIELDS, header => 0 });
+$w4->{parser} = Text::CSV::Smart::Test::BrokenParser->new;
+throws_ok { $w4->write([qw/ a b c /]) } qr/parser error: forced failure/, 'Writer->write reports parser errors';
+$w4->close;
+
+sub slurp {
+  my ($filename) = @_;
+  open my $fh, '<', $filename or die "open($filename): $!";
+  local $/;
+  return <$fh>;
+}
+
+package Text::CSV::Smart::Test::BrokenParser;
+
+sub new { bless {}, shift }
+
+sub print { 0 }
+
+sub error_diag { 'forced failure' }

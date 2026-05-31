@@ -6,8 +6,7 @@
 use strict;
 use warnings;
 
-#use Test::More qw(no_plan);
-use Test::More tests => 16;
+use Test::More tests => 21;
 use Test::Exception;
 
 #########################
@@ -61,5 +60,19 @@ is($i->line, 0, 'Iterator->line (after rewind)');
 
 # 15
 throws_ok { Text::CSV::Smart::Reader::Iterator->new } qr/missing/, 'Iterator->new (w/o Reader)';
+
+my $eof_reader = Text::CSV::Smart->reader('t/csv/sample.csv');
+my $eof_iterator = $eof_reader->iterator;
+my $eof_count = 0;
+$eof_count++ while $eof_iterator->next;
+is($eof_count, 10, 'Iterator->next reaches EOF cleanly');
+is($eof_iterator->next, undef, 'Iterator->next returns undef at EOF');
+
+my $bulk_reader = Text::CSV::Smart->reader('t/csv/sample.csv');
+my $bulk_iterator = $bulk_reader->iterator;
+my @bulk_rows = $bulk_iterator->next(100);
+is(scalar @bulk_rows, 10, 'Iterator->next(100) returns available rows at EOF');
+is($bulk_iterator->line, 10, 'Iterator->line after next(100)');
+is($bulk_iterator->next(100), undef, 'Iterator->next(100) returns undef after EOF');
 
 # die "missing test on initial skip";

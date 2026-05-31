@@ -6,8 +6,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 30;
-#use Test::More qw(no_plan);
+use Test::More tests => 36;
 use Test::Exception;
 
 BEGIN { use_ok('Text::CSV::Smart::Row') };
@@ -37,6 +36,18 @@ throws_ok { Text::CSV::Smart::Row->new({ fields => undef }) } qr/fields argument
 throws_ok { Text::CSV::Smart::Row->new({ fields => [] }) } qr/empty list of fields/, 'empty fields in HASH ref';
 
 throws_ok { Text::CSV::Smart::Row->new([]) } qr/empty list of fields/, 'empty ARRAY ref';
+
+throws_ok { Text::CSV::Smart::Row->new(['']) } qr/empty field name/, 'empty field name';
+
+throws_ok { Text::CSV::Smart::Row->new(['_get']) } qr/field name '_get' is reserved/, 'reserved field name';
+
+throws_ok { Text::CSV::Smart::Row->new(['123']) } qr/field name '123' cannot start with a number/, 'numeric field name';
+
+throws_ok { Text::CSV::Smart::Row->new(['456method']) } qr/field name '456method' cannot start with a number/, 'field name starts with number';
+
+isa_ok(Text::CSV::Smart::Row->new(['method789'], ['ok']), 'Text::CSV::Smart::Row', 'field name can contain trailing digits');
+
+throws_ok { Text::CSV::Smart::Row->new([qw/a a/]) } qr/duplicate field name 'a'/, 'duplicate field name';
 
 throws_ok { Text::CSV::Smart::Row->new(\@FIELDS, []) } qr/wrong number of values/, 'empty ARRAY ref';
 
@@ -83,4 +94,3 @@ is_deeply($c->_values, \@VALUES, 'Row->_values (on clone)');
 throws_ok { Text::CSV::Smart::Row->new({ fields => \@FIELDS, values => [1..3] }) } qr/wrong number of values/, 'Row->new(HASH) (wrong number of values)';
 
 isa_ok(my $r3 = Text::CSV::Smart::Row->new({ fields => \@FIELDS, width => 0, values => [1..3] }), 'Text::CSV::Smart::Row', 'Row->new(HASH) (with width => 0)'); 
-
