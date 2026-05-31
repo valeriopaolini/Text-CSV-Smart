@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Carp;
-use Data::Dumper;
 
 sub new {
   my $class = shift;
@@ -39,7 +38,7 @@ sub new {
   }
   
   if (ref $self->{fields} ne 'ARRAY') {
-    confess sprintf "fields argument is not an ARRAY ref (it is '%s': )", ref $self->{fields} || 'SCALAR', $self->{fields} || '(empty)';
+    confess sprintf "fields argument is not an ARRAY ref (it is '%s')", ref $self->{fields} || 'SCALAR';
   }
     
   if (defined $self->{values} && ref $self->{values} ne 'ARRAY') {
@@ -49,6 +48,10 @@ sub new {
   my $count = 0;
   my %map;
   foreach my $field (@{ $self->{fields} }) {
+    confess "empty field name" unless defined $field && length $field;
+    confess "field name '$field' is reserved" if $field =~ /^_/;
+    confess "field name '$field' cannot start with a number" if $field =~ /^[0-9]/;
+    confess "duplicate field name '$field'" if exists $map{ $field };
     $map{ $field } = $count;
     $count++;
   }
@@ -58,7 +61,7 @@ sub new {
   if ($self->{width}) {
     if (defined $self->{values} && scalar @{ $self->{fields} } != scalar @{ $self->{values} }) {
       #print Dumper($self->{fields}, $self->{values});
-      confess sprintf "wrong number of values: got %s expected %s", scalar @{ $self->{fields} }, scalar @{ $self->{values} };
+      confess sprintf "wrong number of values: got %s expected %s", scalar @{ $self->{values} }, scalar @{ $self->{fields} };
     }
   }
 
