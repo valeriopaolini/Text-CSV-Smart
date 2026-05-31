@@ -71,14 +71,13 @@ sub next {
   my @rows;
   for (1 .. $total) {
     my $row = $self->reader->read($fh);
+    last unless defined $row;
     if ($self->reader->normalize) {
       foreach (@$row) {
         $_ =~ s/^\s+//;
         $_ =~ s/\s+$//;
       }
     }
-    # TODO should we check EOF?
-    last unless defined $row;
     $self->{line}++;
     push @rows, Text::CSV::Smart::Row->new( $self->fields, $row );
   }
