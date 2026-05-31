@@ -10,8 +10,14 @@ MANIFEST
 README
 t/csv/sample.csv
 t/csv/comma.csv
+t/csv/duplicate-fields.csv
+t/csv/number-field.csv
+t/csv/mismatch.csv
+t/csv/skip.csv
 t/csv/writer-t1.csv
 t/csv/writer-t2.csv
+t/csv/tsv.tsv
+t/csv/spaces.csv
 t/10-Text-CSV-Smart-Row.t
 t/20-Text-CSV-Smart-Reader-Iterator.t
 t/30-Text-CSV-Smart-Reader.t
@@ -19,3 +25,4 @@ t/40-Text-CSV-Smart-Writer.t
 t/50-Text-CSV-Smart.t
 
 META.yml                                 Module meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

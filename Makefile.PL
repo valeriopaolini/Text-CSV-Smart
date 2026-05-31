@@ -8,7 +8,13 @@ WriteMakefile(
     PREREQ_PM         => {
                         'Text::CSV::Encoded' => 0.10,
                       },
+    TEST_REQUIRES     => {
+                        'Test::Exception'    => 0,
+                      },
+    META_ADD          => {
+                        license => 'perl',
+                      },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Text/CSV/Smart.pm', # retrieve abstract from module
-       AUTHOR         => 'Valerio Paolini <valdez@ec2.internal>') : ()),
+       AUTHOR         => 'Valerio Paolini <valerio.paolini@gmail.com>') : ()),
 );
