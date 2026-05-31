@@ -6,12 +6,11 @@ use warnings;
 use parent 'Text::CSV::Smart::Base';
 
 use IO::File;
-use Data::Dumper; # FIXME
 use Carp;
 
-use Text::CSV::Smart::Row
+use Text::CSV::Smart::Row;
 
-our $VERSION = '1.0';
+our $VERSION = '1.01';
 
 my %TYPES = map { $_ => 1 } qw/ writer appender /;
 
