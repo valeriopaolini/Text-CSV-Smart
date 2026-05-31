@@ -1,0 +1,24 @@
+---
+abstract: 'Perl extension for smart manipulation of CSV files'
+author:
+  - 'Valerio Paolini <valerio.paolini@gmail.com>'
+build_requires:
+  ExtUtils::MakeMaker: '0'
+  Test::Exception: '0'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+dynamic_config: 0
+generated_by: 'ExtUtils::MakeMaker version 7.62, CPAN::Meta::Converter version 2.150010'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Text-CSV-Smart
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Text::CSV::Encoded: '0.1'
+version: '1.01'
+x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

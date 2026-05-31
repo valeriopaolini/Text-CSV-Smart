@@ -1,8 +1,19 @@
-Revision history for Perl extension Text::CSV::Smart.
+Revision history for Perl class Text::CSV::Smart.
+
+1.01  Sat May 30 2026
+	- fixed minor typos
+	- change default separator to comma
+	- make new($filename, \%args) a reader shortcut and allow explicit
+	  reader/writer/appender dispatch
+	- normalize header field names for safe AUTOLOAD access
+	- reject empty, reserved, numeric, and duplicate field names
+	- document row helpers and parser defaults
+	- add tests for EOF, parser errors, width mismatches, TSV options,
+	  and field-name normalization
+
+1.00  Fri Sep 07
+	- first release with tests
 
 0.01  Mon Aug 27 13:03:16 2012
 	- original version; created by h2xs 1.23 with options
 		-AX Text::CSV::Smart
-
-1.00  Fri Sep 07
-	- first release with tests
