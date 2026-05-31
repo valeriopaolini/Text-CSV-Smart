@@ -4,9 +4,10 @@ use strict;
 use warnings;
 
 use Carp;
+use Scalar::Util qw(blessed);
 use Text::CSV::Encoded;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 sub version { $VERSION; }
 
@@ -20,7 +21,8 @@ sub parser_defaults {
   my $self = shift;
   return (
     binary   => 1,
-    sep_char => qq{\t}, 
+    encoding_in => 'utf8',
+    sep_char => qq{,}, 
     eol      => qq{\n},
   );
 }
@@ -65,15 +67,15 @@ sub write {
       $values = $row;
     }
     else {
-      if ( ! $row->isa('Text::CSV::Smart::Row')) {
+      if ( ! blessed($row) || ! $row->isa('Text::CSV::Smart::Row')) {
         confess sprintf "unknown row type '%s'", ref $row;
       }
       foreach my $field ( @{ $self->fields }) {
         push @$values, $row->$field;
       }
     }
-    # FIXME handle return value
-    my $rv = $self->parser->print( $self->fh, $values );
+    $self->parser->print( $self->fh, $values )
+      or confess "parser error: ". $self->parser->error_diag();
   }
   return $count;
 }
