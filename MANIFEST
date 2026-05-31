@@ -1,0 +1,21 @@
+Changes
+lib/Text/CSV/Smart.pm
+lib/Text/CSV/Smart/Base.pm
+lib/Text/CSV/Smart/Reader.pm
+lib/Text/CSV/Smart/Reader/Iterator.pm
+lib/Text/CSV/Smart/Row.pm
+lib/Text/CSV/Smart/Writer.pm
+Makefile.PL
+MANIFEST
+README
+t/csv/sample.csv
+t/csv/comma.csv
+t/csv/writer-t1.csv
+t/csv/writer-t2.csv
+t/10-Text-CSV-Smart-Row.t
+t/20-Text-CSV-Smart-Reader-Iterator.t
+t/30-Text-CSV-Smart-Reader.t
+t/40-Text-CSV-Smart-Writer.t
+t/50-Text-CSV-Smart.t
+
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -1,0 +1,61 @@
+Text-CSV-Smart version 1.00
+===========================
+
+Text::CSV::Smart lets you manage CSV files without dealing with the gory
+details of a Text::CSV object.
+
+Some examples:
+
+  Given a CSV file with the first line consisting of field names, for example:
+
+    sample.csv
+      name,age,gender
+      Valerio,42,M
+      Maria,41,F
+      Sonia,8,F
+
+  the following script will copy to a new file only the rows with column
+  "gender" equal to M:
+
+    use Text::CSV::Smart;
+    my $reader = Text::CSV::Smart->reader( 'sample.csv' );
+    my $writer = Text::CSV::Smart->writer( 'gender-M.csv', [qw/ name age /] );
+    my $iterator = $reader->iterator;
+    while (my $row = $iterator->next) {
+      next unless $row->gender eq 'M';
+      $writer->write($row);
+    }
+    $reader->close;
+    $writer->close;
+    
+  Please note that the writer object will only use configured fields.
+
+  Have fun!
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+	Text::CSV::Encoded	0.10
+
+which in turn will require
+
+	Text::CSV
+	Text::CSV_XS
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2012 by Valerio Paolini
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.12.3 or,
+at your option, any later version of Perl 5 you may have available.

@@ -1,0 +1,8 @@
+Revision history for Perl extension Text::CSV::Smart.
+
+0.01  Mon Aug 27 13:03:16 2012
+	- original version; created by h2xs 1.23 with options
+		-AX Text::CSV::Smart
+
+1.00  Fri Sep 07
+	- first release with tests
