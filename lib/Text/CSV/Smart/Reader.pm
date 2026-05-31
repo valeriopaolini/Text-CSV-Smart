@@ -6,10 +6,10 @@ use warnings;
 use parent 'Text::CSV::Smart::Base';
 
 use Text::CSV::Smart::Reader::Iterator;
-use Data::Dumper; # FIXME
+use IO::File;
 use Carp;
 
-our $VERSION = '1.0';
+our $VERSION = '1.01';
 
 sub new {
   my ($class, $filename, $args) = @_;
@@ -55,12 +55,30 @@ sub user_fields { shift->{user_fields} }
 
 sub normalize { shift->{normalize} }
 
+sub normalize_field_names {
+  my ($class, @names) = @_;
+  my %seen;
+  my @fields;
+  foreach my $name (@names) {
+    my $field = $class->normalize_field_name($name);
+    confess "duplicate field name '$field'" if $seen{$field}++;
+    push @fields, $field;
+  }
+  return wantarray ? @fields : \@fields;
+}
+
 sub normalize_field_name {
-  my ($self, $name) = @_;
-  $name =~ tr/[^Sa-zA-Z0-9]/\_/c;
+  my ($class, $name) = @_;
+  confess "empty field name" unless defined $name;
+  $name =~ s/^\s+//;
+  $name =~ s/\s+$//;
+  $name =~ s/[^A-Za-z0-9]+/\_/g;
   $name =~ s/\_+/\_/g;
   $name =~ s/^\_//;
   $name =~ s/\_$//;
+  confess "empty field name" unless length $name;
+  confess "field name '$name' is reserved" if $name =~ /^_/;
+  confess "field name '$name' cannot start with a number" if $name =~ /^[0-9]/;
   return $name;
 }
 
@@ -77,7 +95,7 @@ sub file_fields {
   }
   my $fields = $self->read($fh);
   $fh->close;
-  return $self->{file_fields} = [ map { $self->normalize_field_name($_) } @$fields ];
+  return $self->{file_fields} = $self->normalize_field_names(@$fields);
 }
 
 sub fields {
